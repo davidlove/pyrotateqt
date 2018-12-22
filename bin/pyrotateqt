@@ -1,0 +1,6 @@
+#!/usr/bin/env /usr/bin/python
+
+from pyrotateqt import *
+
+run()
+
