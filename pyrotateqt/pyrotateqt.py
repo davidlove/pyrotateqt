@@ -14,6 +14,14 @@ from PyQt5.QtGui import QIcon
 DIR = op.dirname(op.realpath(__file__))
 
 
+# The variable MY_TOUCHSCREEN lets you manually configure the name of
+# your touchscreen. Otherwise the script attempts automatic detection
+# of devices names "touchscreen" or "wacom".
+# To enable automatic detection, simply comment the variable out
+#MY_TOUCHSCREEN = 'ELAN2097:00 04F3:2501'
+MY_TOUCHSCREEN = '13'
+
+
 class MainWindow(QMainWindow):
     """
          Сheckbox and system tray icons.
@@ -103,13 +111,15 @@ class MainWindow(QMainWindow):
             sys.exit(1)
         self.basedir = basedir
 
-        devices = [str(xx) for xx in check_output(['xinput', '--list', '--name-only']).splitlines()]
+        try:
+            self.touchscreens = [MY_TOUCHSCREEN]
+        except (NameError, UnboundLocalError):
+            # These lines are from the original script for identifying the
+            # touchscreen, but they don't work for my laptop
+            devices = [str(xx) for xx in check_output(['xinput', '--list', '--name-only']).splitlines()]
+            touchscreen_names = ['touchscreen', 'wacom']
+            self.touchscreens = [i for i in devices if any(j in i.lower() for j in touchscreen_names)]
 
-        touchscreen_names = ['touchscreen', 'wacom']
-        touchscreens = [i for i in devices if any(j in i.lower() for j in touchscreen_names)]
-
-        # Name of touchscreen is not standard
-        self.touchscreens = ['ELAN2097:00 04F3:2501']
 
         #self.disable_touchpads = True
 
